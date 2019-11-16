@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.devnote.MainActivity">
+    <item
+        android:id="@+id/setting"
+        android:orderInCategory="100"
+        android:title="Cài đặt"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_settings_applications_24px"/>
+
+    <item
+        android:id="@+id/help"
+        android:orderInCategory="100"
+        android:title="Trợ giúp"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_contact_support_24px"/>
+
+    <item
+        android:id="@+id/search"
+        android:orderInCategory="100"
+        android:title="Tìm kiếm"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_search_24px" />
+
+
+</menu>

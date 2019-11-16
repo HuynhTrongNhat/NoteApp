@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/bankcard"
+        android:title="Tài khoản ngân hàng"
+        android:icon="@drawable/ic_credit_card_24px"
+        />
+    <item android:id="@+id/spices"
+        android:title="Các đồ hương liệu"
+        android:icon="@drawable/ic_opacity_24px"
+        />
+    <item android:id="@+id/birthday"
+        android:title="Ngày sinh nhật"
+        android:icon="@drawable/ic_cake_24px"
+        />
+    <item android:id="@+id/note"
+        android:title="Ghi chú văn bản"
+        android:icon="@drawable/ic_event_note_24px"
+        />
+    <item android:id="@+id/settings"
+        android:title="Cài đặt"
+        android:icon="@drawable/ic_settings_applications_24px"/>
+</menu>

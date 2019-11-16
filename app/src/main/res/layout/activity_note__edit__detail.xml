@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Note_Edit_Detail">
+
+    <EditText
+        android:id="@+id/edit_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Nhập tiêu đề vào đây nếu cần thiết"
+        android:textSize="15dp"
+        android:padding="15dp"
+        android:background="@drawable/custom_edit_text"
+        android:maxLines="2"/>
+    <EditText
+        android:id="@+id/edit_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""
+        android:gravity="start"
+        android:textAlignment="textStart"
+        android:hint="Nhập nội dung"
+        android:textSize="15dp"
+        android:padding="15dp"
+        android:background="@drawable/custom_edit_text"/>
+
+</LinearLayout>

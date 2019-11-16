@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Ghi chú</string>
+    <string name="action_settings">Settings</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="title_activity_note__edit__detail">Ghi chú mới</string>
+    <string name="title_activity_note__view__detail">Đọc ghi chú</string>
+    <string name="title_main">Ghi chú văn bản</string>
+</resources>
