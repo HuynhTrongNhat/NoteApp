@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
         noteAdapter.setOnItemLongClickListener(new NoteAdapter.OnItemLongClickListener() {
             @Override
-            public void onItemLongClick(int positions) {
-                position2 = positions;
-                createDialog();
+            public void onItemLongClick(int position, View view) {
+                position2 = position;
+                registerForContextMenu(view);
             }
         });
     }
@@ -260,5 +261,29 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.context_item_edit:
+                Toast.makeText(this, "Chỉnh sửa", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.context_item_delete:
+                createDialog();
+                return true;
+            case R.id.context_item_copy:
+                Toast.makeText(this, "Copy", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.menu_context_item, menu);
     }
 }

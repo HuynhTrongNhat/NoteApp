@@ -1,16 +1,20 @@
 package com.example.notebook;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.AMViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.AMViewHolder>  {
 
     private List<Note> notes;
     private OnItemClickListener mListener;
@@ -33,7 +37,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.AMViewHolder> 
     }
 
     public interface OnItemLongClickListener {
-        void onItemLongClick(int position);
+        void onItemLongClick(int position, View view);
     }
 
     @NonNull
@@ -76,12 +80,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.AMViewHolder> 
 
     public static class AMViewHolder extends RecyclerView.ViewHolder {
         TextView title, date, time;
+        CardView cardView;
 
-        AMViewHolder(View itemView, final OnItemClickListener listener, final OnItemLongClickListener longClickListener) {
+        AMViewHolder(final View itemView, final OnItemClickListener listener, final OnItemLongClickListener longClickListener) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             date = (TextView) itemView.findViewById(R.id.date);
             time = (TextView) itemView.findViewById(R.id.time);
+            cardView = (CardView) itemView.findViewById(R.id.cardview);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,13 +107,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.AMViewHolder> 
                     if (longClickListener != null) {
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
-                            longClickListener.onItemLongClick(position);
+                            longClickListener.onItemLongClick(position, cardView);
                         }
                     }
                     return true;
                 }
             });
         }
+
     }
+
 
 }

@@ -69,9 +69,13 @@ public class Note_Edit_Detail extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        sendToMain();
-        Toast.makeText(Note_Edit_Detail.this, "Đã lưu", Toast.LENGTH_LONG).show();
-        super.onBackPressed();
+        if (editTitle.getText().toString().trim().equalsIgnoreCase("") && editContent.getText().toString().trim().equalsIgnoreCase("")) {
+            Toast.makeText(Note_Edit_Detail.this, "Không hoàn tất", Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            sendToMain();
+            Toast.makeText(Note_Edit_Detail.this, "Đã lưu", Toast.LENGTH_LONG).show();
+        }super.onBackPressed();
     }
 
     public void sendToMain() {
