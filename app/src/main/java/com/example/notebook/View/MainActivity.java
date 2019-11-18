@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
     public static final int RESULT_CODE2 = 116;
     public static final int REQUEST_CODE3 = 117;
     public static final int RESULT_CODE3 = 118;
+    public static final int RESULT_CODE31 = 119;
+    public static final int RESULT_CODE32 = 120;
+
+    String firstDate, lastEditDate, firstTimeCopy, idCopy, titleCopy, contentCopy, dateCopy, timeCopy;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 //do something
                 switch (menuItem.getItemId()) {
                     case R.id.note:
+                        goTo(MainActivity.this);
                         Toast.makeText(MainActivity.this, "Ghi chú văn bản", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.bankcard:
@@ -142,14 +147,14 @@ public class MainActivity extends AppCompatActivity {
         }));
     }
 
-    public void delete() {
-        String idNt = notes.get(position2).getId();
+    public void delete(int index) {
+        String idNt = notes.get(index).getId();
         database.QueryData("DELETE FROM NOTES WHERE ID = '" + idNt + "' ");
-        notes.remove(notes.get(position2));
+        notes.remove(notes.get(index));
         noteAdapter.notifyDataSetChanged();
     }
 
-    public void createDialog() {
+    public void createDialog(final int index) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Xác nhận xóa");
         builder.setCancelable(false);
@@ -164,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                delete();
+                delete(index);
                 Toast.makeText(MainActivity.this, "Đã xóa", Toast.LENGTH_SHORT).show();
             }
         });
@@ -175,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     public void createDatabase() {
         database = new Database(this, "note.sqlite", null, 1);
 
-        database.QueryData("CREATE TABLE IF NOT EXISTS NOTES(ID VARCHAR(100) PRIMARY KEY, TITLE VARCHAR(200), CONTENT TEXT, DATE VARCHAR(20), TIME VARCHAR(20))");
+        database.QueryData("CREATE TABLE IF NOT EXISTS NOTES(ID VARCHAR(100) PRIMARY KEY, TITLE VARCHAR(200), CONTENT TEXT, DATE VARCHAR(20), TIME VARCHAR(20), FIRSTDATE VARCHAR(40))");
 
         Cursor cursor = database.GetData("SELECT * FROM NOTES");
         notes.clear();
@@ -185,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
             String contentNote = cursor.getString(2);
             String dateNote = cursor.getString(3);
             String timeNote = cursor.getString(4);
-            notes.add(new Note(idNote, titleNote, contentNote, dateNote, timeNote));
+            String firstDateNote = cursor.getString(5);
+            notes.add(new Note(idNote, titleNote, contentNote, dateNote, timeNote, firstDateNote));
         }
     }
 
@@ -218,13 +224,12 @@ public class MainActivity extends AppCompatActivity {
         intent2.putExtra("IDS", notes.get(position1).getId());
         intent2.putExtra("TITLES", notes.get(position1).getTitle());
         intent2.putExtra("CONTENTS", notes.get(position1).getContent());
-        intent2.putExtra("DATES", notes.get(position1).getDate());
-        intent2.putExtra("TIMES", notes.get(position1).getTime());
+        intent2.putExtra("LAST", lastEditDate);
+        intent2.putExtra("FIRSTDATE", notes.get(position1).getFirstDate());
         startActivityForResult(intent2, REQUEST_CODE3);
     }
 
-
-    public void goToNoteUpdateDetail () {
+    public void goToNoteUpdateDetail() {
         Intent intent3 = new Intent(this, Note_Update_Detail.class);
         intent3.putExtra("ti", notes.get(position2).getTitle());
         intent3.putExtra("co", notes.get(position2).getContent());
@@ -247,10 +252,12 @@ public class MainActivity extends AppCompatActivity {
                 date = dateFormat.format(calendar.getTime());
                 time = timeFormat.format(calendar.getTime());
 
+                firstDate = time + ", " + date;
+
                 UUID uuid = UUID.randomUUID();
                 id = uuid.toString();
 
-                addObjectDatabase(id, title, content, date, time);
+                addObjectDatabase(id, title, content, date, time, firstDate);
             }
         }
         if (requestCode == REQUEST_CODE2) {
@@ -263,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
 
                 dateUpdate = dateFormat.format(calendar.getTime());
                 timeUpdate = timeFormat.format(calendar.getTime());
+
+                lastEditDate = timeUpdate + ", " + dateUpdate;
 
                 updateObjectDatabase(titleUpdate, contentUpdate, timeUpdate, dateUpdate, position2);
             }
@@ -278,7 +287,31 @@ public class MainActivity extends AppCompatActivity {
                 dateUpdate2 = dateFormat.format(calendar.getTime());
                 timeUpdate2 = timeFormat.format(calendar.getTime());
 
+                lastEditDate = timeUpdate2 + ", " + dateUpdate2;
+
                 updateObjectDatabase(titleUpdate2, contentUpdate2, timeUpdate2, dateUpdate2, position1);
+            }
+            if (resultCode == RESULT_CODE31) {
+                delete(position1);
+            }
+
+            if (resultCode == RESULT_CODE32) {
+                titleCopy = data.getStringExtra("titleCopy");
+                contentCopy = data.getStringExtra("contentCopy");
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+
+                dateCopy = dateFormat.format(calendar.getTime());
+                timeCopy = timeFormat.format(calendar.getTime());
+
+                UUID uuid = UUID.randomUUID();
+                idCopy = uuid.toString();
+
+                firstTimeCopy = dateCopy + ", " + timeCopy;
+
+                addObjectDatabase(idCopy, titleCopy, contentCopy, dateCopy, timeCopy, firstTimeCopy);
             }
         }
     }
@@ -295,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
         noteAdapter.notifyDataSetChanged();
     }
 
-    public void addObjectDatabase(String id, String title, String content, String date, String time) {
-        database.QueryData("INSERT INTO NOTES VALUES('" + id + "', '" + title + "', '" + content + "', '" + date + "', '" + time + "')");
+    public void addObjectDatabase(String id, String title, String content, String date, String time, String firstDate) {
+        database.QueryData("INSERT INTO NOTES VALUES('" + id + "', '" + title + "', '" + content + "', '" + date + "', '" + time + "', '" + firstDate + "')");
 
         Cursor cursor = database.GetData("SELECT * FROM NOTES");
         notes.clear();
@@ -306,7 +339,8 @@ public class MainActivity extends AppCompatActivity {
             String contentNote = cursor.getString(2);
             String dateNote = cursor.getString(3);
             String timeNote = cursor.getString(4);
-            notes.add(new Note(idNote, titleNote, contentNote, dateNote, timeNote));
+            String firstDateNote = cursor.getString(5);
+            notes.add(new Note(idNote, titleNote, contentNote, dateNote, timeNote, firstDateNote));
         }
         noteAdapter.notifyDataSetChanged();
     }
@@ -328,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
                 goToNoteUpdateDetail();
                 return true;
             case R.id.context_item_delete:
-                createDialog();
+                createDialog(position2);
                 return true;
             case R.id.context_item_copy:
                 Toast.makeText(this, "Copy", Toast.LENGTH_SHORT).show();
@@ -390,5 +424,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void goTo(Context context) {
+        Intent intentGoto = new Intent(context, MainActivity.class);
+        startActivity(intentGoto);
+    }
 
 }

@@ -1,7 +1,7 @@
 package com.example.notebook.Module;
 
 public class Note {
-    private String id, title, content, date, time;
+    private String id, title, content, date, time, firstDate;
 
     public Note() {
     }
@@ -11,12 +11,21 @@ public class Note {
         this.content = content;
     }
 
-    public Note(String id, String title, String content, String date, String time) {
+    public Note(String id, String title, String content, String date, String time, String firstDate) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.date = date;
         this.time = time;
+        this.firstDate = firstDate;
+    }
+
+    public String getFirstDate() {
+        return firstDate;
+    }
+
+    public void setFirstDate(String firstDate) {
+        this.firstDate = firstDate;
     }
 
     public String getId() {

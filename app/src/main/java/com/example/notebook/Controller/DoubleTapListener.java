@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.notebook.View.Note_View_Detail;
-
 public class DoubleTapListener implements View.OnClickListener {
 
     private boolean isRunning = false;
@@ -19,20 +17,19 @@ public class DoubleTapListener implements View.OnClickListener {
     }
 
     public interface DoubleTapCallback {
-        public void onDoubleClick(View v);
+        void onDoubleClick(View v);
     }
+
     @Override
     public void onClick(View v) {
-        if (counter == 0) {
-            Toast.makeText(v.getContext(), "Nhấn đúp để chỉnh sửa", Toast.LENGTH_SHORT).show();
-        }
         if (isRunning) {
-            if (counter == 1) { //<-- makes sure that the callback is triggered on double click
+            if (counter == 1) {
                 listener.onDoubleClick(v);
             }
         }
         counter++;
         if (!isRunning) {
+            Toast.makeText(v.getContext(), "Nhấn đúp để chỉnh sửa", Toast.LENGTH_SHORT).show();
             isRunning = true;
             new Thread(new Runnable() {
                 @Override
@@ -47,7 +44,5 @@ public class DoubleTapListener implements View.OnClickListener {
                 }
             }).start();
         }
-
     }
-
 }
