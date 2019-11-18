@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Note_Edit_Detail">
+    tools:context=".View.Note_Edit_Detail">
 
     <EditText
         android:id="@+id/edit_title"
@@ -16,6 +16,7 @@
         android:textSize="15dp"
         android:padding="15dp"
         android:background="@drawable/custom_edit_text"
+        android:lines="1"
         android:maxLines="2"/>
     <EditText
         android:id="@+id/edit_content"

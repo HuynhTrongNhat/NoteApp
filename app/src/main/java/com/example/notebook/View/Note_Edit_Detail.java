@@ -1,19 +1,20 @@
-package com.example.notebook;
+package com.example.notebook.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.notebook.R;
 
 public class Note_Edit_Detail extends AppCompatActivity {
 
     EditText editTitle, editContent;
     boolean deHeight = true;
-    int height;
+    public static final int height = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class Note_Edit_Detail extends AppCompatActivity {
 
         editTitle = (EditText) findViewById(R.id.edit_title);
         editContent = (EditText) findViewById(R.id.edit_content);
+
     }
 
     @Override
@@ -36,16 +38,16 @@ public class Note_Edit_Detail extends AppCompatActivity {
         switch (id) {
             case R.id.save:
                 if (editTitle.getText().toString().trim().equalsIgnoreCase("") && editContent.getText().toString().trim().equalsIgnoreCase("")) {
-                    Toast.makeText(Note_Edit_Detail.this, "Không hoàn tất", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Note_Edit_Detail.this, "Chưa được lưu", Toast.LENGTH_SHORT).show();
                     finish();
                     break;
                 } else {
                     sendToMain();
-                    Toast.makeText(Note_Edit_Detail.this, "Đã lưu", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Note_Edit_Detail.this, "Đã lưu", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.delete:
-                Toast.makeText(this, "Đã xóa", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Đã xóa", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case R.id.titleEdit:
@@ -58,24 +60,24 @@ public class Note_Edit_Detail extends AppCompatActivity {
 
     public void setHeightTitle() {
         if (deHeight == true) {
-            height = editTitle.getHeight();
-            editTitle.setHeight(0);
             deHeight = false;
+            editTitle.setHeight(0);
         } else {
-            editTitle.setHeight(height);
             deHeight = true;
+            editTitle.setLines(height);
         }
     }
 
     @Override
     public void onBackPressed() {
         if (editTitle.getText().toString().trim().equalsIgnoreCase("") && editContent.getText().toString().trim().equalsIgnoreCase("")) {
-            Toast.makeText(Note_Edit_Detail.this, "Không hoàn tất", Toast.LENGTH_LONG).show();
+            Toast.makeText(Note_Edit_Detail.this, "Chưa được lưu", Toast.LENGTH_SHORT).show();
             finish();
         } else {
             sendToMain();
-            Toast.makeText(Note_Edit_Detail.this, "Đã lưu", Toast.LENGTH_LONG).show();
-        }super.onBackPressed();
+            Toast.makeText(Note_Edit_Detail.this, "Đã lưu", Toast.LENGTH_SHORT).show();
+        }
+        super.onBackPressed();
     }
 
     public void sendToMain() {
@@ -86,4 +88,5 @@ public class Note_Edit_Detail extends AppCompatActivity {
         setResult(MainActivity.RESULT_CODE, getIntent());
         finish();
     }
+
 }

@@ -9,15 +9,16 @@
         android:roundIcon="@drawable/avatar1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Note_Update_Detail"></activity>
+        <activity android:name=".View.Note_Update_from_View"></activity>
+        <activity android:name=".View.Note_Update_Detail" />
         <activity
-            android:name=".Note_View_Detail"
+            android:name=".View.Note_View_Detail"
             android:label="@string/title_activity_note__view__detail" />
         <activity
-            android:name=".Note_Edit_Detail"
+            android:name=".View.Note_Edit_Detail"
             android:label="@string/title_activity_note__edit__detail" />
         <activity
-            android:name=".MainActivity"
+            android:name=".View.MainActivity"
             android:label="@string/title_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

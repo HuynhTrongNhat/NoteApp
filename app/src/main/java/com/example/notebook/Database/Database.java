@@ -1,4 +1,4 @@
-package com.example.notebook;
+package com.example.notebook.Database;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -1,4 +1,4 @@
-package com.example.notebook;
+package com.example.notebook.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -8,16 +8,23 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.notebook.Database.Database;
+import com.example.notebook.Module.Note;
+import com.example.notebook.Adapter.NoteAdapter;
+import com.example.notebook.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -25,13 +32,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 113;
     public static final int RESULT_CODE = 114;
+    public static final int REQUEST_CODE2 = 115;
+    public static final int RESULT_CODE2 = 116;
+    public static final int REQUEST_CODE3 = 117;
+    public static final int RESULT_CODE3 = 118;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -41,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
     List<Note> notes;
     RecyclerView recyclerView;
     String id, title, content, date, time;
-    int position;
+    String titleUpdate, contentUpdate, dateUpdate, timeUpdate;
+    String titleUpdate2, contentUpdate2, dateUpdate2, timeUpdate2;
+    int position1;
     int position2;
 
     boolean back = false;
@@ -107,28 +119,27 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        noteAdapter = new NoteAdapter(notes);
+        noteAdapter = new NoteAdapter(this, notes);
         recyclerView.setAdapter(noteAdapter);
 
         createDatabase();
 
         noteAdapter.notifyDataSetChanged();
 
-        noteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
+                recyclerView, new NoteAdapter.ClickListener() {
             @Override
-            public void onItemClick(int positions) {
-                position = positions;
+            public void onClick(View view, final int position) {
+                position1 = position;
                 goToNoteViewDetail();
             }
-        });
 
-        noteAdapter.setOnItemLongClickListener(new NoteAdapter.OnItemLongClickListener() {
             @Override
-            public void onItemLongClick(int position, View view) {
+            public void onLongClick(View view, int position) {
                 position2 = position;
                 registerForContextMenu(view);
             }
-        });
+        }));
     }
 
     public void delete() {
@@ -178,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -199,8 +209,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToNoteEditDetail() {
-        Intent intent = new Intent(this, Note_Edit_Detail.class);
-        startActivityForResult(intent, REQUEST_CODE);
+        Intent intentNoteEdit = new Intent(this, Note_Edit_Detail.class);
+        startActivityForResult(intentNoteEdit, REQUEST_CODE);
+    }
+
+    public void goToNoteViewDetail() {
+        Intent intent2 = new Intent(MainActivity.this, Note_View_Detail.class);
+        intent2.putExtra("IDS", notes.get(position1).getId());
+        intent2.putExtra("TITLES", notes.get(position1).getTitle());
+        intent2.putExtra("CONTENTS", notes.get(position1).getContent());
+        intent2.putExtra("DATES", notes.get(position1).getDate());
+        intent2.putExtra("TIMES", notes.get(position1).getTime());
+        startActivityForResult(intent2, REQUEST_CODE3);
+    }
+
+
+    public void goToNoteUpdateDetail () {
+        Intent intent3 = new Intent(this, Note_Update_Detail.class);
+        intent3.putExtra("ti", notes.get(position2).getTitle());
+        intent3.putExtra("co", notes.get(position2).getContent());
+        startActivityForResult(intent3, REQUEST_CODE2);
     }
 
     @Override
@@ -211,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
                 Bundle bundle = data.getBundleExtra("data");
                 title = bundle.getString("title");
                 content = bundle.getString("content");
-                Note note = new Note(title, content);
 
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -219,12 +246,53 @@ public class MainActivity extends AppCompatActivity {
 
                 date = dateFormat.format(calendar.getTime());
                 time = timeFormat.format(calendar.getTime());
+
                 UUID uuid = UUID.randomUUID();
                 id = uuid.toString();
 
                 addObjectDatabase(id, title, content, date, time);
             }
         }
+        if (requestCode == REQUEST_CODE2) {
+            if (resultCode == RESULT_CODE2) {
+                titleUpdate = data.getStringExtra("titless");
+                contentUpdate = data.getStringExtra("contentss");
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+
+                dateUpdate = dateFormat.format(calendar.getTime());
+                timeUpdate = timeFormat.format(calendar.getTime());
+
+                updateObjectDatabase(titleUpdate, contentUpdate, timeUpdate, dateUpdate, position2);
+            }
+        }
+        if (requestCode == REQUEST_CODE3) {
+            if (resultCode == RESULT_CODE3) {
+                titleUpdate2 = data.getStringExtra("titleUpdate");
+                contentUpdate2 = data.getStringExtra("contentUpdate");
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+
+                dateUpdate2 = dateFormat.format(calendar.getTime());
+                timeUpdate2 = timeFormat.format(calendar.getTime());
+
+                updateObjectDatabase(titleUpdate2, contentUpdate2, timeUpdate2, dateUpdate2, position1);
+            }
+        }
+    }
+
+    public void updateObjectDatabase(String titleUpdate, String contentUpdate, String dateUpdate, String timeUpdate, int index) {
+        Note note = notes.get(index);
+
+        note.setTitle(titleUpdate);
+        note.setContent(contentUpdate);
+        note.setDate(dateUpdate);
+        note.setTime(timeUpdate);
+
+        database.QueryData("UPDATE NOTES SET TITLE = '" + titleUpdate + "', CONTENT = '" + contentUpdate + "', DATE = '" + dateUpdate + "', TIME = '" + timeUpdate + "' WHERE ID = '" + note.getId() + "'");
+        noteAdapter.notifyDataSetChanged();
     }
 
     public void addObjectDatabase(String id, String title, String content, String date, String time) {
@@ -243,20 +311,10 @@ public class MainActivity extends AppCompatActivity {
         noteAdapter.notifyDataSetChanged();
     }
 
-    public void goToNoteViewDetail() {
-        Intent intent2 = new Intent(MainActivity.this, Note_View_Detail.class);
-        intent2.putExtra("IDS", notes.get(position).getId());
-        intent2.putExtra("TITLES", notes.get(position).getTitle());
-        intent2.putExtra("CONTENTS", notes.get(position).getContent());
-        intent2.putExtra("DATES", notes.get(position).getDate());
-        intent2.putExtra("TIMES", notes.get(position).getTime());
-        startActivity(intent2);
-    }
-
     @Override
     public void onBackPressed() {
         if (back == false) {
-            Toast.makeText(this, "Nhấn back một lần nữa để thoát ứng dụng!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Nhấn back một lần nữa để thoát ứng dụng!", Toast.LENGTH_SHORT).show();
             back = true;
         } else {
             super.onBackPressed();
@@ -267,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_item_edit:
-                Toast.makeText(this, "Chỉnh sửa", Toast.LENGTH_SHORT).show();
+                goToNoteUpdateDetail();
                 return true;
             case R.id.context_item_delete:
                 createDialog();
@@ -286,4 +344,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.menu_context_item, menu);
     }
+
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private NoteAdapter.ClickListener clicklistener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(Context context, final RecyclerView recycleView, final NoteAdapter.ClickListener clicklistener) {
+
+            this.clicklistener = clicklistener;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recycleView.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clicklistener != null) {
+                        clicklistener.onLongClick(child, recycleView.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+    }
+
+
 }

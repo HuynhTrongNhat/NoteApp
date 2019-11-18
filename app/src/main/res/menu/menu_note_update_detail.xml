@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/titleEdit"
+        android:id="@+id/titleUpdate"
         android:icon="@drawable/ic_notes_24px"
         app:showAsAction="always"
         android:title="" />
 
     <item
-        android:id="@+id/delete"
+        android:id="@+id/deleteUpdate"
         android:title="Xóa"
         android:icon="@drawable/ic_cancel_24px"
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/save"
+        android:id="@+id/saveUpdate"
         android:title="Lưu"
         android:icon="@drawable/ic_check_24px"
         app:showAsAction="always"/>

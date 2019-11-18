@@ -1,4 +1,4 @@
-package com.example.notebook;
+package com.example.notebook.Module;
 
 public class Note {
     private String id, title, content, date, time;
