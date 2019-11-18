@@ -6,4 +6,5 @@
     <string name="title_activity_note__edit__detail">Ghi chú mới</string>
     <string name="title_activity_note__view__detail">Đọc ghi chú</string>
     <string name="title_main">Ghi chú văn bản</string>
+    <string name="title_activity_note_update">Chỉnh sửa ghi chú</string>
 </resources>

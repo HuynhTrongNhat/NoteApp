@@ -9,8 +9,10 @@
         android:roundIcon="@drawable/avatar1"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Note_Update_from_View"></activity>
-        <activity android:name=".View.Note_Update_Detail" />
+        <activity android:name=".View.Note_Update_from_View"
+            android:label="@string/title_activity_note_update" ></activity>
+        <activity android:name=".View.Note_Update_Detail"
+            android:label="@string/title_activity_note_update" />
         <activity
             android:name=".View.Note_View_Detail"
             android:label="@string/title_activity_note__view__detail" />
