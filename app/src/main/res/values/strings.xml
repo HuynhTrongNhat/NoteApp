@@ -7,4 +7,7 @@
     <string name="title_activity_note__view__detail">Đọc ghi chú</string>
     <string name="title_main">Ghi chú văn bản</string>
     <string name="title_activity_note_update">Chỉnh sửa ghi chú</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

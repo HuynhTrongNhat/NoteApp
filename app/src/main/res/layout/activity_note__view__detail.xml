@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:onClick="onDoubleClick"
     tools:context=".View.Note_View_Detail">
 
     <TextView
@@ -19,7 +20,10 @@
         android:maxLines="2"/>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/scroll"
+        android:fillViewport="true"
+        android:background="@drawable/custom_edit_text">
         <TextView
             android:id="@+id/view_content"
             android:layout_width="match_parent"
@@ -29,7 +33,6 @@
             android:gravity="start"
             android:textAlignment="textStart"
             android:textSize="15dp"
-            android:padding="15dp"
-            android:background="@drawable/custom_edit_text"/>
+            android:padding="15dp"/>
     </ScrollView>
 </LinearLayout>

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,12 +22,10 @@ import com.example.notebook.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static android.widget.Toast.LENGTH_LONG;
-
 public class Note_View_Detail extends AppCompatActivity implements DoubleTapListener.DoubleTapCallback {
 
-    public static int REQUEST_CODE4 = 119;
-    public static int RESULT_CODE4 = 120;
+    public static int REQUEST_CODE4 = 121;
+    public static int RESULT_CODE4 = 122;
 
     TextView viewTitle, viewContent;
     String id, title, content, date, time, firstdate, lasteditdate;
@@ -34,6 +33,8 @@ public class Note_View_Detail extends AppCompatActivity implements DoubleTapList
     String titleUpdate, contentUpdate;
     TextView firstDate, lastEditDate, lastViewDate;
     Button btnOK;
+
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,15 @@ public class Note_View_Detail extends AppCompatActivity implements DoubleTapList
         mapping();
 
         receivedToMain();
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void mapping () {
         viewTitle = (TextView) findViewById(R.id.view_title);
         viewContent = (TextView) findViewById(R.id.view_content);
+        scrollView = (ScrollView) findViewById(R.id.scroll);
 
+        scrollView.setOnClickListener(new DoubleTapListener(this));
         viewTitle.setOnClickListener(new DoubleTapListener(this));
         viewContent.setOnClickListener(new DoubleTapListener(this));
     }
@@ -93,9 +96,12 @@ public class Note_View_Detail extends AppCompatActivity implements DoubleTapList
             case R.id.copy:
                 getIntent().putExtra("titleCopy", title);
                 getIntent().putExtra("contentCopy", content);
-                setResult(MainActivity.RESULT_CODE32, getIntent());
+                setResult(Note_Text_Fragment.RESULT_CODE32, getIntent());
                 Toast.makeText(this, "Đã tạo bản sao", Toast.LENGTH_SHORT).show();
                 finish();
+                break;
+            case android.R.id.home:
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -126,14 +132,9 @@ public class Note_View_Detail extends AppCompatActivity implements DoubleTapList
 
     public void sendToMain() {
         getIntent().putExtra("titleUpdate", titleUpdate);
-        getIntent().putExtra("contentUpdate", content);
-        setResult(MainActivity.RESULT_CODE3, getIntent());
+        getIntent().putExtra("contentUpdate", contentUpdate);
+        setResult(Note_Text_Fragment.RESULT_CODE3, getIntent());
         finish();
-    }
-
-    @Override
-    public void onDoubleClick(View v) {
-        goToNoteUpdateFromView();
     }
 
     public void createDialog() {
@@ -152,7 +153,7 @@ public class Note_View_Detail extends AppCompatActivity implements DoubleTapList
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(Note_View_Detail.this, "Đã xóa", Toast.LENGTH_SHORT).show();
-                setResult(MainActivity.RESULT_CODE31, getIntent());
+                setResult(Note_Text_Fragment.RESULT_CODE31, getIntent());
                 finish();
             }
         });
@@ -198,5 +199,15 @@ public class Note_View_Detail extends AppCompatActivity implements DoubleTapList
 
         lastviewdate = time + ", " + date;
         super.onBackPressed();
+    }
+
+    @Override
+    public void onSingleClick(View v) {
+        Toast.makeText(this, "Nhấn đúp để chỉnh sửa", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDoubleClick(View v) {
+        goToNoteUpdateFromView();
     }
 }

@@ -6,9 +6,17 @@ import android.widget.Toast;
 
 public class DoubleTapListener implements View.OnClickListener {
 
-    private boolean isRunning = false;
-    private int resetInTime = 500;
-    private int counter = 0;
+    private static final long DOUBLE_CLICK_TIME_DELTA = 500;//milliseconds
+
+    boolean oneTouch = false;
+    boolean doubleTouch = false;
+    long lastClickTime = 0;
+
+    public interface DoubleTapCallback {
+        void onSingleClick(View v);
+
+        void onDoubleClick(View v);
+    }
 
     private DoubleTapCallback listener;
 
@@ -16,33 +24,23 @@ public class DoubleTapListener implements View.OnClickListener {
         listener = (DoubleTapCallback) context;
     }
 
-    public interface DoubleTapCallback {
-        void onDoubleClick(View v);
-    }
-
     @Override
     public void onClick(View v) {
-        if (isRunning) {
-            if (counter == 1) {
+        long clickTime = System.currentTimeMillis();
+        if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+            doubleTouch = true;
+            if (oneTouch == true && doubleTouch == true) {
+                Toast.makeText(v.getContext(), "Chỉnh sửa...", Toast.LENGTH_SHORT).show();
                 listener.onDoubleClick(v);
+                lastClickTime = 0;
             }
+        } else {
+            oneTouch = true;
+            if (oneTouch == true && doubleTouch == false) {
+                Toast.makeText(v.getContext(), "Nhấn đúp để chỉnh sửa", Toast.LENGTH_SHORT).show();
+            }
+            listener.onSingleClick(v);
         }
-        counter++;
-        if (!isRunning) {
-            Toast.makeText(v.getContext(), "Nhấn đúp để chỉnh sửa", Toast.LENGTH_SHORT).show();
-            isRunning = true;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(resetInTime);
-                        isRunning = false;
-                        counter = 0;
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
+        lastClickTime = clickTime;
     }
 }

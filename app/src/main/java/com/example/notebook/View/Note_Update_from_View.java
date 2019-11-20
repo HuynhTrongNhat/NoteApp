@@ -24,6 +24,8 @@ public class Note_Update_from_View extends AppCompatActivity {
         editContent = (EditText) findViewById(R.id.update_content);
 
         receivedFromView();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
      public void receivedFromView () {
         Bundle bundle = getIntent().getBundleExtra("note");
@@ -66,6 +68,9 @@ public class Note_Update_from_View extends AppCompatActivity {
                 break;
             case R.id.titleEdit:
                 setHeightTitle();
+                break;
+            case android.R.id.home:
+                onBackPressed();
                 break;
         }
 

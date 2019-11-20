@@ -24,6 +24,7 @@ public class Note_Update_Detail extends AppCompatActivity {
         editContent = (EditText) findViewById(R.id.update_content);
 
         receivedFromMain();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void receivedFromMain() {
@@ -66,8 +67,10 @@ public class Note_Update_Detail extends AppCompatActivity {
             case R.id.titleEdit:
                 setHeightTitle();
                 break;
+            case android.R.id.home:
+                onBackPressed();
+                break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -82,7 +85,7 @@ public class Note_Update_Detail extends AppCompatActivity {
     public void sendToMain() {
         getIntent().putExtra("titless", editTitle.getText().toString().trim());
         getIntent().putExtra("contentss", editContent.getText().toString().trim());
-        setResult(MainActivity.RESULT_CODE2, getIntent());
+        setResult(Note_Text_Fragment.RESULT_CODE2, getIntent());
         finish();
     }
 

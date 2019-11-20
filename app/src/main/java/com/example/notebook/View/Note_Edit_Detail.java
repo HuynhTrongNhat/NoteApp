@@ -85,7 +85,7 @@ public class Note_Edit_Detail extends AppCompatActivity {
         bundle.putString("title", editTitle.getText().toString().trim());
         bundle.putString("content", editContent.getText().toString().trim());
         getIntent().putExtra("data", bundle);
-        setResult(MainActivity.RESULT_CODE, getIntent());
+        setResult(Note_Text_Fragment.RESULT_CODE, getIntent());
         finish();
     }
 
