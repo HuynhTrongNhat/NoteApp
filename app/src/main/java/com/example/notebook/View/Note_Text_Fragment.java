@@ -4,23 +4,31 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.SupportActionModeWrapper;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.example.notebook.Adapter.NoteAdapter;
@@ -59,12 +67,46 @@ public class Note_Text_Fragment extends Fragment {
     private int position1;
     private int position2;
 
-    Database database;
+    private Database database;
+    private ActionBar mActionBar;
+    private ActionMode.Callback2 mActionMode;
+    AbsListView.MultiChoiceModeListener isSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        mActionMode = new ActionMode.Callback2() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.menu_multi_choose, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
+            }
+        };
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -76,7 +118,6 @@ public class Note_Text_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_note_text, container, false);
     }
 
@@ -301,6 +342,7 @@ public class Note_Text_Fragment extends Fragment {
         noteAdapter.notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -327,6 +369,9 @@ public class Note_Text_Fragment extends Fragment {
                 addObjectDatabase(getIdCopy, notes.get(position2).getTitle(), notes.get(position2).getContent(), getDateCopy, getTimeCopy, getFirstDateCopy);
 
                 Toast.makeText(getContext(), "Copy", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.context_item_multiple_choose:
+                mActionBar.startActionMode((androidx.appcompat.view.ActionMode.Callback) mActionMode);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -383,5 +428,6 @@ public class Note_Text_Fragment extends Fragment {
 
         }
     }
+
 }
 
